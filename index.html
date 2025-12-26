@@ -1,213 +1,213 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<meta charset="UTF-8">
-<title>نموذج إضافة التوقيع - SAP</title>
+  <meta charset="UTF-8">
+  <title>نموذج إضافة التوقيع على نظام SAP</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
-<style>
-body {
-  font-family: 'Cairo', sans-serif;
-  background: linear-gradient(135deg, #1E2A5A, #6A1B9A);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  direction: rtl;
-}
+  <style>
+    body {
+      font-family: "Cairo", sans-serif;
+      background: linear-gradient(135deg, #1E2A5A, #6A1B9A);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
 
-.container {
-  background: #ffffff;
-  width: 420px;
-  padding: 28px;
-  border-radius: 14px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-}
+    .container {
+      background: #fff;
+      width: 440px;
+      padding: 28px;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    }
 
-.title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1E2A5A;
-  margin-bottom: 10px;
-  text-align: center;
-}
+    .title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: #1E2A5A;
+      margin-bottom: 12px;
+    }
 
-.description {
-  font-size: 14px;
-  color: #444;
-  line-height: 1.8;
-  margin-bottom: 15px;
-  text-align: center;
-}
+    .description {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.8;
+      margin-bottom: 12px;
+      text-align: center;
+    }
 
-input[type="text"], input[type="file"] {
-  width: 100%;
-  padding: 11px;
-  margin-bottom: 14px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
+    .note {
+      font-weight: 700;
+      color: #6A1B9A;
+      text-align: center;
+      margin-bottom: 14px;
+    }
 
-canvas {
-  width: 100%;
-  height: 160px;
-  border: 2px dashed #6A1B9A;
-  border-radius: 10px;
-  margin-bottom: 15px;
-  background-color: #fff;
-}
+    label {
+      font-weight: 600;
+      font-size: 14px;
+      display: block;
+      margin-bottom: 6px;
+      color: #1E2A5A;
+    }
 
-.consent {
-  font-size: 13px;
-  color: #333;
-  background: #F6F3FF;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-}
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-family: "Cairo", sans-serif;
+    }
 
-.buttons {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
+    canvas {
+      width: 100%;
+      height: 160px;
+      border: 2px dashed #6A1B9A;
+      border-radius: 10px;
+      margin-bottom: 14px;
+    }
 
-button {
-  padding: 10px 18px;
-  border-radius: 8px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .consent {
+      background: #f5f3ff;
+      border: 1px solid #d8c9ff;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
 
-.btn-save {
-  background: #1E2A5A;
-  color: white;
-}
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
 
-.btn-clear {
-  background: #9C4DCC;
-  color: white;
-}
-</style>
+    button {
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-save { background: #1E2A5A; color: #fff; }
+    .btn-clear { background: #9C4DCC; color: #fff; }
+  </style>
 </head>
 
 <body>
 
 <div class="container">
-
   <div class="title">نموذج إضافة التوقيع على نظام SAP</div>
 
   <div class="description">
-    يرجى تعبئة كود المستخدم الخاص بكم وإضافة التوقيع لاعتماده رسميًا في نظام تخطيط موارد المؤسسة (SAP).
+    يرجى تعبئة كود المستخدم الخاص بكم وإضافة التوقيع لغرض اعتماده ضمن نظام تخطيط موارد المؤسسة (SAP).
   </div>
 
-  <input type="text" id="employeeId" placeholder="كود المستخدم">
+  <div class="note">(رسم التوقيع أو رفع صورة التوقيع)</div>
 
+  <label>كود المستخدم</label>
+  <input type="text" id="employeeId" placeholder="مثال: 10266">
+
+  <label>رفع صورة التوقيع</label>
   <input type="file" accept="image/*" onchange="loadImage(event)">
 
   <canvas id="signature"></canvas>
-  <div class="hint">
-      ملاحظة: يفضّل أن تكون صورة التوقيع بخلفية بيضاء وبحجم صغير (مثلاً أقل من 500KB) لضمان جودة التوقيع.
+<div class="hint">
+  ملاحظة: يُفضّل أن تكون صورة التوقيع بخلفية بيضاء وبحجم صغير (أقل من 500KB) لضمان وضوح وجودة التوقيع.
+</div>
+
   <div class="consent">
     <label>
       <input type="checkbox" id="agree">
-      أُقِرّ بأن التوقيع المرفق صحيح ويخصني، وأوافق على اعتماده واستخدامه ضمن نظام تخطيط موارد المؤسسة (SAP).
+      أُقرّ بصحة التوقيع المرفق، وأوافق على استخدامه رسميًا ضمن أنظمة المؤسسة (SAP).
     </label>
-
   </div>
 
   <div class="buttons">
     <button class="btn-save" onclick="saveSignature()">حفظ التوقيع</button>
     <button class="btn-clear" onclick="clearCanvas()">مسح</button>
   </div>
-
 </div>
 
 <script>
-const canvas = document.getElementById("signature");
-const ctx = canvas.getContext("2d");
+  const canvas = document.getElementById("signature");
+  const ctx = canvas.getContext("2d");
 
-canvas.width = canvas.offsetWidth;
-canvas.height = canvas.offsetHeight;
+  function resizeCanvas() {
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = canvas.offsetHeight * ratio;
+    ctx.scale(ratio, ratio);
+  }
+  resizeCanvas();
 
-let drawing = false;
-let uploadedImage = null;
+  let drawing = false;
 
-canvas.addEventListener("mousedown", () => drawing = true);
-canvas.addEventListener("mouseup", () => { drawing = false; ctx.beginPath(); });
-canvas.addEventListener("mousemove", draw);
+  canvas.addEventListener("mousedown", () => drawing = true);
+  canvas.addEventListener("mouseup", () => { drawing = false; ctx.beginPath(); });
+  canvas.addEventListener("mousemove", draw);
 
-function draw(e) {
-  if (!drawing) return;
-  const rect = canvas.getBoundingClientRect();
-  ctx.lineWidth = 2;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = "#000";
-  ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-}
+  function draw(e) {
+    if (!drawing) return;
+    const rect = canvas.getBoundingClientRect();
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#000";
+    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+  }
 
-function clearCanvas() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  uploadedImage = null;
-}
+  function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
 
-function loadImage(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+  function loadImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const img = new Image();
-    img.onload = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      uploadedImage = canvas.toDataURL("image/png");
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      };
+      img.src = e.target.result;
     };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function saveSignature() {
-  const employeeId = document.getElementById("employeeId").value;
-  const approved = document.getElementById("agree").checked;
-
-  if (!employeeId) {
-    alert("يرجى إدخال كود المستخدم");
-    return;
+    reader.readAsDataURL(file);
   }
 
-  if (!approved) {
-    alert("يرجى الموافقة على الإقرار قبل الإرسال");
-    return;
-  }
+  function saveSignature() {
+    const emp = document.getElementById("employeeId").value.trim();
+    const approved = document.getElementById("agree").checked;
 
-  const signature = uploadedImage || canvas.toDataURL("image/png");
+    if (!emp) return alert("يرجى إدخال كود المستخدم");
+    if (!approved) return alert("يرجى الموافقة على الإقرار أولاً");
 
-  fetch("https://wejdan191.app.n8n.cloud/webhook/signature", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      employee_id: employeeId,
-      signature: signature
+    const signature = canvas.toDataURL("image/png");
+
+    fetch("https://wejdan191.app.n8n.cloud/webhook/signature", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        employee_id: emp,
+        signature: signature
+      })
     })
-  })
-  .then(() => alert("✅ تم حفظ التوقيع بنجاح"))
-  .catch(() => alert("❌ حدث خطأ أثناء الحفظ"));
-}
+    .then(() => alert("✅ تم حفظ التوقيع بنجاح"))
+    .catch(() => alert("❌ حدث خطأ أثناء الإرسال"));
+  }
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
