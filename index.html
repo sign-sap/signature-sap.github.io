@@ -34,26 +34,26 @@ body {
   text-align: center;
   font-size: 22px;
   font-weight: 700;
-  margin-bottom: 10px;
+  color: #1E2A5A;
 }
 
 .description {
   text-align: center;
   font-size: 14px;
-  margin-bottom: 10px;
+  margin: 10px 0;
 }
 
 .note {
   text-align: center;
   font-size: 14px;
   color: #6A1B9A;
-  margin-bottom: 14px;
+  margin-bottom: 15px;
 }
 
 label {
-  display: block;
-  margin: 12px 0 6px;
   font-weight: 600;
+  display: block;
+  margin-top: 12px;
 }
 
 input[type="text"],
@@ -62,38 +62,54 @@ input[type="file"] {
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
+  margin-top: 6px;
 }
 
 canvas {
   width: 100%;
   height: 160px;
   border: 2px dashed #6A1B9A;
+  border-radius: 10px;
   margin-top: 10px;
+}
+
+.hint {
+  font-size: 12px;
+  color: #555;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.consent {
+  margin-top: 14px;
+  font-size: 14px;
+  display: flex;
+  gap: 8px;
 }
 
 .buttons {
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin-top: 16px;
+  margin-top: 18px;
 }
 
 button {
   padding: 10px 18px;
-  border: none;
   border-radius: 8px;
-  font-weight: bold;
+  border: none;
+  font-weight: 600;
   cursor: pointer;
 }
 
-.btn-save { background:#1E2A5A; color:#fff; }
-.btn-clear { background:#9C4DCC; color:#fff; }
+.btn-save {
+  background: #1E2A5A;
+  color: #fff;
+}
 
-.consent {
-  margin-top: 15px;
-  display: flex;
-  gap: 8px;
-  font-size: 14px;
+.btn-clear {
+  background: #9C4DCC;
+  color: #fff;
 }
 </style>
 </head>
@@ -101,15 +117,14 @@ button {
 <body>
 
 <div class="container">
+
   <div class="title">نموذج إضافة التوقيع على نظام SAP</div>
 
   <div class="description">
-    يرجى تعبئة كود المستخدم وإرفاق التوقيع لاعتماده رسميًا ضمن نظام SAP.
+    يرجى تعبئة كود المستخدم وإضافة التوقيع لاعتماده ضمن نظام تخطيط موارد المؤسسة.
   </div>
 
-  <div class="note">
-    (يمكن رسم التوقيع أو رفع صورة واضحة بدون تعديل)
-  </div>
+  <div class="note">(يمكن رسم التوقيع أو رفع صورة واضحة للتوقيع)</div>
 
   <label>كود المستخدم</label>
   <input type="text" id="employeeId" placeholder="مثال: 10266">
@@ -119,26 +134,36 @@ button {
 
   <canvas id="signature"></canvas>
 
+  <div class="hint">
+    يفضّل أن تكون الصورة بخلفية بيضاء وحجم أقل من 500KB.
+  </div>
+
   <div class="consent">
     <input type="checkbox" id="agree">
     <label for="agree">أُقر بصحة التوقيع وأوافق على استخدامه رسميًا ضمن نظام SAP</label>
   </div>
 
   <div class="buttons">
-    <button class="btn-save" onclick="submitForm()">حفظ التوقيع</button>
+    <button class="btn-save" onclick="saveSignature()">حفظ التوقيع</button>
     <button class="btn-clear" onclick="clearCanvas()">مسح</button>
   </div>
+
 </div>
 
 <script>
 const canvas = document.getElementById("signature");
 const ctx = canvas.getContext("2d");
 
-canvas.width = canvas.offsetWidth;
-canvas.height = canvas.offsetHeight;
+function resizeCanvas() {
+  const ratio = window.devicePixelRatio || 1;
+  canvas.width = canvas.offsetWidth * ratio;
+  canvas.height = canvas.offsetHeight * ratio;
+  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+}
+resizeCanvas();
 
 let drawing = false;
-let uploadedFile = null;
+let uploadedImage = null;
 
 canvas.addEventListener("mousedown", () => drawing = true);
 canvas.addEventListener("mouseup", () => { drawing = false; ctx.beginPath(); });
@@ -146,44 +171,70 @@ canvas.addEventListener("mousemove", draw);
 
 function draw(e) {
   if (!drawing) return;
-  const rect = canvas.getBoundingClientRect();
+  const r = canvas.getBoundingClientRect();
   ctx.lineWidth = 2;
-  ctx.strokeStyle = "#000";
   ctx.lineCap = "round";
-  ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+  ctx.strokeStyle = "#000";
+  ctx.lineTo(e.clientX - r.left, e.clientY - r.top);
   ctx.stroke();
   ctx.beginPath();
-  ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+  ctx.moveTo(e.clientX - r.left, e.clientY - r.top);
 }
 
-document.getElementById("signatureFile").addEventListener("change", e => {
-  uploadedFile = e.target.files[0];
+document.getElementById("signatureFile").addEventListener("change", function (e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  if (file.size > 500 * 1024) {
+    alert("حجم الصورة يجب أن يكون أقل من 500KB");
+    e.target.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function () {
+    const img = new Image();
+    img.onload = function () {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const scale = Math.min(
+        canvas.width / img.width,
+        canvas.height / img.height
+      );
+
+      const w = img.width * scale;
+      const h = img.height * scale;
+      const x = (canvas.width - w) / 2;
+      const y = (canvas.height - h) / 2;
+
+      ctx.drawImage(img, x, y, w, h);
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
 });
 
 function clearCanvas() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   document.getElementById("signatureFile").value = "";
-  uploadedFile = null;
 }
 
-function submitForm() {
+function saveSignature() {
   const emp = document.getElementById("employeeId").value.trim();
-  if (!emp) return alert("أدخل كود المستخدم");
-  if (!document.getElementById("agree").checked) return alert("يجب الموافقة على الإقرار");
+  const approved = document.getElementById("agree").checked;
 
-  const formData = new FormData();
-  formData.append("employee_id", emp);
+  if (!emp) return alert("يرجى إدخال كود المستخدم");
+  if (!approved) return alert("يرجى الموافقة على الإقرار");
 
-  if (uploadedFile) {
-    formData.append("signature", uploadedFile);
-  } else {
-    // fallback للرسم
-    formData.append("signature", canvas.toDataURL("image/png"));
-  }
+  const signature = canvas.toDataURL("image/png");
 
   fetch("https://wejdan191.app.n8n.cloud/webhook/signature", {
     method: "POST",
-    body: formData
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      employee_id: emp,
+      signature: signature
+    })
   })
   .then(() => alert("تم حفظ التوقيع بنجاح"))
   .catch(() => alert("حدث خطأ أثناء الإرسال"));
